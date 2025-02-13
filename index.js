@@ -52,7 +52,7 @@ app.get('/api/links', async (req, res) => {
 // Ruta para obtener el registro de cambios realizados por los usuarios
 app.get('/api/registros', async (req, res) => {
   try {
-    const [rows] = await promisePool.query('SELECT * FROM registro_cambios');
+    const [rows] = await promisePool.query('SELECT * FROM registro_actividad');
     res.json(rows);
   } catch (err) {
     res.status(500).send('Error al obtener registros');
