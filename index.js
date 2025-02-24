@@ -75,7 +75,7 @@ app.post('/api-tc-production.up.railway.app/letras', async (req, res) => {
     }
 
     // Llamar a la función de creación
-    const result = await crearLetra(promisePool, idUsuario, titulo, contenido);
+    const result = await crearEntrada(promisePool, idUsuario, titulo, contenido);
     res.status(201).json(result);
   } catch (err) {
     console.error('Error al crear letra:', err);
