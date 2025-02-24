@@ -2,11 +2,18 @@ require('dotenv').config(); // Cargar variables de entorno del archivo .env
 const express = require('express');
 const mysql = require('mysql2');
 const fs = require('fs').promises; // Importar fs para manejar archivos
+const cors = require('cors'); // Importar cors
 const app = express();
-const port = process.env.PORT || 3306;
+const port = process.env.PORT || 3000;
 
 // Middleware para parsear JSON
 app.use(express.json());
+
+// Configuración de CORS
+app.use(cors({
+  origin: '*', // Permite todas las solicitudes (en producción, cambia esto a tu dominio específico)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}));
 
 // Configuración de la conexión a la base de datos MySQL
 const pool = mysql.createPool({
@@ -31,17 +38,17 @@ app.get('/api-tc/admins', async (req, res) => {
     const [rows] = await promisePool.query('SELECT * FROM administradores');
     res.json(rows);
   } catch (err) {
-    res.status(500).send('Error al obtener usuarios');
+    res.status(500).json({ error: 'Error al obtener usuarios', details: err.message });
   }
 });
 
 // Ruta para obtener todas las letras de las músicas
-app.get('/api-tc/letras', async (req, res) => {
+app.get('/letras', async (req, res) => {
   try {
     const [rows] = await promisePool.query('SELECT * FROM letras');
     res.json(rows);
   } catch (err) {
-    res.status(500).send('Error al obtener letras');
+    res.status(500).json({ error: 'Error al obtener letras', details: err.message });
   }
 });
 
@@ -51,7 +58,7 @@ app.get('/api-tc/links', async (req, res) => {
     const [rows] = await promisePool.query('SELECT * FROM links');
     res.json(rows);
   } catch (err) {
-    res.status(500).send('Error al obtener links');
+    res.status(500).json({ error: 'Error al obtener links', details: err.message });
   }
 });
 
@@ -61,7 +68,7 @@ app.get('/api-tc/registros', async (req, res) => {
     const [rows] = await promisePool.query('SELECT * FROM registro_actividad');
     res.json(rows);
   } catch (err) {
-    res.status(500).send('Error al obtener registros');
+    res.status(500).json({ error: 'Error al obtener registros', details: err.message });
   }
 });
 
