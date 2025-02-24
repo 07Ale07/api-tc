@@ -65,7 +65,7 @@ app.get('/api-tc/registros', async (req, res) => {
 });
 
 // Ruta para crear una nueva letra
-app.post('/api-tc/letras', async (req, res) => {
+app.post('/api-tc-production.up.railway.app/letras', async (req, res) => {
   try {
     const { idUsuario, titulo, contenido } = req.body;
 
