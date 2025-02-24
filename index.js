@@ -4,7 +4,7 @@ const mysql = require('mysql2');
 const fs = require('fs').promises; // Importar fs para manejar archivos
 const cors = require('cors'); // Importar cors
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 // Middleware para parsear JSON
 app.use(express.json());
