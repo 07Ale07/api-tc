@@ -20,9 +20,9 @@ const pool = mysql.createPool({
 const promisePool = pool.promise();
 
 // Ruta para obtener todos los usuarios
-app.get('/api/usuarios', async (req, res) => {
+app.get('/api-tc/admins', async (req, res) => {
   try {
-    const [rows] = await promisePool.query('SELECT * FROM usuarios');
+    const [rows] = await promisePool.query('SELECT * FROM administradores');
     res.json(rows);
   } catch (err) {
     res.status(500).send('Error al obtener usuarios');
@@ -30,7 +30,7 @@ app.get('/api/usuarios', async (req, res) => {
 });
 
 // Ruta para obtener todas las letras de las músicas
-app.get('/api/letras', async (req, res) => {
+app.get('/api-tc/letras', async (req, res) => {
   try {
     const [rows] = await promisePool.query('SELECT * FROM letras');
     res.json(rows);
@@ -40,7 +40,7 @@ app.get('/api/letras', async (req, res) => {
 });
 
 // Ruta para obtener los links de escucha de las músicas
-app.get('/api/links', async (req, res) => {
+app.get('/api-tc/links', async (req, res) => {
   try {
     const [rows] = await promisePool.query('SELECT * FROM links');
     res.json(rows);
@@ -50,7 +50,7 @@ app.get('/api/links', async (req, res) => {
 });
 
 // Ruta para obtener el registro de cambios realizados por los usuarios
-app.get('/api/registros', async (req, res) => {
+app.get('/api-tc/registros', async (req, res) => {
   try {
     const [rows] = await promisePool.query('SELECT * FROM registro_actividad');
     res.json(rows);
