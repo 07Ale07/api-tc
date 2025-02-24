@@ -64,24 +64,34 @@ app.get('/api-tc/registros', async (req, res) => {
   }
 });
 
+
+
+
+
+
 // Ruta para crear una nueva letra
 app.post('/api-tc-production.up.railway.app/letras', async (req, res) => {
   try {
     const { idUsuario, titulo, contenido } = req.body;
-
     // Validar que los campos requeridos estén presentes
     if (!idUsuario || !titulo || !contenido) {
       return res.status(400).json({ error: 'Faltan campos requeridos' });
     }
+    // Llamar a la función crearEntrada
+    const idLetra = await crearEntrada(idUsuario, titulo, contenido);
 
-    // Llamar a la función de creación
-    const result = await crearEntrada(promisePool, idUsuario, titulo, contenido);
-    res.status(201).json(result);
+    // Responder con el ID de la letra creada
+    res.status(201).json({ idLetra, message: 'Letra creada con éxito' });
   } catch (err) {
     console.error('Error al crear letra:', err);
     res.status(500).json({ error: 'Error al crear letra', details: err.message });
   }
 });
+
+
+
+
+
 
 // Ruta para editar una letra existente
 app.put('/api-tc/letras/:id', async (req, res) => {
