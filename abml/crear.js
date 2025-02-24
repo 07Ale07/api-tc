@@ -7,33 +7,33 @@ const dbConfig = {
   port: 3306,
   user: 'root',
   password: 'OcbnbDTNyGsTQIJqnZMsVyumeQLZpZpK',
-  database: 'railway'
+  database: 'railway',
 };
 
 // Función para crear una nueva entrada
-async function crearEntrada(idUsuario, idLetra, titulo, contenido) {
+async function crearEntrada(idUsuario, titulo, contenido) {
   const connection = await mysql.createConnection(dbConfig);
 
   try {
     // Convertir el contenido a un archivo de texto si es una variable de texto
     let letraBuffer;
     if (typeof contenido === 'string') {
-      const filePath = `letra_${idLetra}.txt`;
-      await fs.writeFile(filePath, contenido, 'utf-8');
-      letraBuffer = await fs.readFile(filePath);
-      await fs.unlink(filePath); // Eliminar el archivo temporal después de leerlo
+      letraBuffer = Buffer.from(contenido, 'utf-8'); // Convertir directamente a buffer
     } else {
-      letraBuffer = await fs.readFile(contenido.path);
+      letraBuffer = await fs.readFile(contenido.path); // Leer archivo si es un objeto
     }
 
-    // Inicia una transacción
+    // Iniciar una transacción
     await connection.beginTransaction();
 
     // Insertar la nueva entrada en la tabla principal
-    await connection.execute(
-      'INSERT INTO letras (id_letra, titulo, letra) VALUES (?, ?, ?)',
-      [idLetra, titulo, letraBuffer]
+    const [result] = await connection.execute(
+      'INSERT INTO letras (titulo, letra) VALUES (?, ?)',
+      [titulo, letraBuffer]
     );
+
+    // Obtener el ID de la letra recién insertada
+    const idLetra = result.insertId;
 
     // Registrar la actividad en la tabla registro_actividades
     const actividad = `El usuario ${idUsuario} ha añadido la alabanza '${titulo}'`;
@@ -46,10 +46,12 @@ async function crearEntrada(idUsuario, idLetra, titulo, contenido) {
     // Confirmar la transacción
     await connection.commit();
     console.log('Entrada creada y actividad registrada con éxito');
+    return idLetra; // Devolver el ID de la letra creada
   } catch (error) {
     // Revertir la transacción en caso de error
     await connection.rollback();
     console.error('Error al crear la entrada:', error);
+    throw error; // Relanzar el error para que el llamador lo maneje
   } finally {
     // Cerrar la conexión
     await connection.end();
