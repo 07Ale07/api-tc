@@ -12,7 +12,8 @@ app.use(express.json());
 // Configuración de CORS
 app.use(cors({
   origin: '*', // Permite todas las solicitudes (en producción, cambia esto a tu dominio específico)
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
 }));
 
 // Configuración de la conexión a la base de datos MySQL
