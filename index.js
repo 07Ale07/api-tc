@@ -2,19 +2,11 @@ require('dotenv').config(); // Cargar variables de entorno del archivo .env
 const express = require('express');
 const mysql = require('mysql2');
 const fs = require('fs').promises; // Importar fs para manejar archivos
-const cors = require('cors'); // Importar cors
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware para parsear JSON
 app.use(express.json());
-
-// Configuración de CORS
-app.use(cors({
-  origin: '*', // Permite todas las solicitudes (en producción, cambia esto a tu dominio específico)
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
-  allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
-}));
 
 // Configuración de la conexión a la base de datos MySQL
 const pool = mysql.createPool({
