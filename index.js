@@ -36,7 +36,7 @@ app.get('/api-tc/admins', async (req, res) => {
 });
 
 // Ruta para obtener todas las letras de las músicas
-app.get('/letras', async (req, res) => {
+app.get('https://api-tc-production.up.railway.app/letras', async (req, res) => {
   try {
     const [rows] = await promisePool.query('SELECT * FROM letras');
     res.json(rows);
