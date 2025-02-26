@@ -43,9 +43,8 @@ app.get('/letras', async (req, res) => {
 
     // Transformar el contenido de tipo BLOB a texto
     const transformedSongs = rows.map(song => ({
-      id_letra: song.id_letra,
-      letra: song.letra, // Este campo es VARCHAR, no necesita transformación
-      contenido: song.contenido ? song.contenido.toString('utf-8') : 'No hay contenido disponible para esta canción.',
+      ...song,
+      contenido: song.letra ? song.letra.toString('utf-8') : 'No hay contenido disponible para esta canción.',
     }));
 
     res.json(transformedSongs);
