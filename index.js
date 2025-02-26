@@ -35,15 +35,24 @@ app.get('/api-tc/admins', async (req, res) => {
   }
 });
 
+
 // Ruta para obtener todas las letras de las músicas
-app.get('https://api-tc-production.up.railway.app/letras', async (req, res) => {
+app.get('/letras', async (req, res) => {
   try {
     const [rows] = await promisePool.query('SELECT * FROM letras');
-    res.json(rows);
+
+    // Transformar el contenido de tipo BLOB a texto
+    const transformedSongs = rows.map(song => ({
+      ...song,
+      contenido: song.letra ? song.letra.toString('utf-8') : 'No hay contenido disponible para esta canción.',
+    }));
+
+    res.json(transformedSongs);
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener letras', details: err.message });
   }
 });
+
 
 // Ruta para obtener los links de escucha de las músicas
 app.get('/api-tc/links', async (req, res) => {
