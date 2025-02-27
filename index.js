@@ -26,7 +26,7 @@ const editarLetra = require('./abml/editar');
 const eliminarLetra = require('./abml/eliminar');
 
 // Ruta para obtener todos los usuarios
-app.get('/api-tc/admins', async (req, res) => {
+app.get('/admins', async (req, res) => {
   try {
     const [rows] = await promisePool.query('SELECT * FROM administradores');
     res.json(rows);
