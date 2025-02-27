@@ -16,6 +16,26 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
 });
 
+// Ruta para verificar la conexión a la base de datos
+app.get('/check-db-connection', async (req, res) => {
+  try {
+    // Obtener una conexión del pool
+    const connection = await pool.promise().getConnection();
+
+    // Intentar ejecutar una consulta simple para verificar la conexión
+    await connection.query('SELECT 1');
+
+    // Liberar la conexión
+    connection.release();
+
+    // Enviar respuesta de éxito
+    res.status(200).json({ success: true, message: 'Conexión a la base de datos exitosa' });
+  } catch (error) {
+    console.error('Error al conectar a la base de datos:', error);
+    res.status(500).json({ success: false, message: 'Error al conectar a la base de datos', error: error.message });
+  }
+});
+
 // Ruta para obtener todas las alabanzas
 app.get('/alabanzas', async (req, res) => {
   try {
