@@ -19,18 +19,27 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
+// Mensaje en la consola al iniciar el servidor
+console.log('Iniciando servidor...');
+console.log('Verificando conexión a la base de datos...');
+
 // Ruta para verificar la conexión a la base de datos
 app.get('/check-db-connection', async (req, res) => {
   let connection;
   try {
+    console.log('Intentando conectar a la base de datos...');
     connection = await pool.promise().getConnection();
     await connection.query('SELECT 1'); // Consulta simple para verificar conexión
+    console.log('Conexión a la base de datos exitosa.');
     res.status(200).json({ success: true, message: 'Conexión a la base de datos exitosa' });
   } catch (error) {
     console.error('Error al conectar a la base de datos:', error);
     res.status(500).json({ success: false, message: 'Error al conectar a la base de datos', error: error.code });
   } finally {
-    if (connection) connection.release(); // Liberar la conexión en cualquier caso
+    if (connection) {
+      console.log('Liberando conexión...');
+      connection.release(); // Liberar la conexión en cualquier caso
+    }
   }
 });
 
@@ -38,6 +47,7 @@ app.get('/check-db-connection', async (req, res) => {
 app.get('/alabanzas', async (req, res) => {
   let connection;
   try {
+    console.log('Obteniendo todas las alabanzas...');
     connection = await pool.promise().getConnection();
     
     // Consulta SQL para obtener todas las alabanzas
@@ -50,16 +60,23 @@ app.get('/alabanzas', async (req, res) => {
       letra: typeof row.letra === 'string' ? JSON.parse(row.letra) : row.letra
     }));
 
+    console.log('Alabanzas obtenidas correctamente.');
     res.status(200).json({ success: true, data: formattedRows });
   } catch (error) {
     console.error('Error al consultar la base de datos:', error);
     res.status(500).json({ success: false, message: 'Error al obtener las alabanzas', error: error.code });
   } finally {
-    if (connection) connection.release();
+    if (connection) {
+      console.log('Liberando conexión...');
+      connection.release();
+    }
   }
 });
 
 // Iniciar el servidor
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
+  console.log('Prueba los siguientes endpoints:');
+  console.log(`- Verificar conexión a la base de datos: GET http://localhost:${port}/check-db-connection`);
+  console.log(`- Obtener todas las alabanzas: GET http://localhost:${port}/alabanzas`);
 });
