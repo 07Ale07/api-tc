@@ -54,11 +54,26 @@ app.get('/alabanzas', async (req, res) => {
     const [rows] = await connection.query('SELECT * FROM alabanzas');
     
     // Convertir la columna "letra" de string JSON a un objeto real si es necesario
-    const formattedRows = rows.map(row => ({
-      id: row.id,
-      titulo: row.titulo,
-      letra: typeof row.letra === 'string' ? JSON.parse(row.letra) : row.letra
-    }));
+    const formattedRows = rows.map(row => {
+      try {
+        const letra = typeof row.letra === 'string' ? JSON.parse(row.letra) : row.letra;
+        if (typeof letra !== 'object' || letra === null || Array.isArray(letra)) {
+          throw new Error('La letra no es un objeto válido');
+        }
+        return {
+          id: row.id,
+          titulo: row.titulo,
+          letra: letra
+        };
+      } catch (error) {
+        console.error(`Error al procesar la letra de la alabanza con ID ${row.id}:`, error);
+        return {
+          id: row.id,
+          titulo: row.titulo,
+          letra: {} // O un valor por defecto
+        };
+      }
+    });
 
     console.log('Alabanzas obtenidas correctamente.');
     res.status(200).json({ success: true, data: formattedRows });
